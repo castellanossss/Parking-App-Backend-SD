@@ -1,10 +1,12 @@
+const fs = require('fs');
+
 let cars = [];
 
 exports.register = (req, res) => {
     const { license_plate, color } = req.body;
     const licensePlate = license_plate.toUpperCase();
     const imagePath = req.file ? req.file.filename : '';
-    const entryTime = req.body.entryTime || new Date(); 
+    const entryTime = req.body.entryTime || new Date();
 
     // Buscar si ya existe un carro con la misma placa
     const existingCarIndex = cars.findIndex(car => car.licensePlate === licensePlate);
@@ -55,12 +57,20 @@ exports.getCarByLicensePlate = (req, res) => {
 exports.update = (req, res) => {
     const { license_plate, color, new_license_plate } = req.body;
     const licensePlate = license_plate.toUpperCase();
-    const newLicensePlate = new_license_plate ? new_license_plate.toUpperCase() : license_plate.toUpperCase();
+    const newLicensePlate = new_license_plate ? new_license_plate.toUpperCase() : licensePlate;
 
     const carIndex = cars.findIndex(c => c.licensePlate === licensePlate);
 
     if (carIndex === -1) {
         console.log(`${new Date().toLocaleString()} - Error: Car not found - License Plate: ${licensePlate}.`);
+        if (req.file) {
+            // Eliminar la foto subida si la actualización falla
+            fs.unlink(`./uploads/${req.file.filename}`, (err) => {
+                if (err) {
+                    console.error(`Failed to delete uploaded file: ${req.file.filename}`);
+                }
+            });
+        }
         return res.status(404).json({ message: 'Car not found.' });
     }
 
@@ -71,6 +81,13 @@ exports.update = (req, res) => {
     };
 
     if (req.file) {
+        if (cars[carIndex].imagePath) {
+            fs.unlink(`./uploads/${cars[carIndex].imagePath}`, (err) => {
+                if (err) {
+                    console.error(`Failed to delete old file: ${cars[carIndex].imagePath}`);
+                }
+            });
+        }
         updatedCar.imagePath = req.file.filename;
     }
 
