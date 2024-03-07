@@ -10,6 +10,10 @@ COPY package*.json ./
 # Instalar las dependencias del proyecto
 RUN npm install
 
+# instalar pm2
+
+RUN npm install pm2 -g
+
 # Copiar los archivos fuente del proyecto al contenedor
 COPY . .
 
@@ -17,4 +21,4 @@ COPY . .
 EXPOSE 2527
 
 # Comando para ejecutar la aplicación
-CMD ["node", "server.js"]
+CMD ["pm2", "start", "server.js"]
