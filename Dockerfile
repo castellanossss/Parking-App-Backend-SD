@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 2527
 
 # Comando para ejecutar la aplicación
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
