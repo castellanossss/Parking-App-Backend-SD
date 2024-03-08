@@ -1,0 +1,14 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+  backend:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/parkingServiceBD
+    depends_on:
+      - mongodb

@@ -3,10 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/parkingServiceBD', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect('mongodb://mongodb:27017/parkingServiceBD')
     .then(() => console.log('MongoDB connected...'))
     .catch(err => console.error('MongoDB connection error:', err));
 
